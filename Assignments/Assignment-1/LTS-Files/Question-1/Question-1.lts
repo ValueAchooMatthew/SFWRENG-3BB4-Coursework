@@ -1,0 +1,17 @@
+CONFIRM = (
+    use -> pay -> leave -> archive -> STOP
+  | cancel -> STOP
+).
+
+WAITLIST = (
+    room_becomes_available -> CONFIRM
+  | cancel -> STOP
+  | keep_waiting -> WAITLIST
+).
+
+REQUEST = (
+    room_available -> CONFIRM
+  | room_unavailable -> WAITLIST
+).
+
+RESERVATION = REQUEST.
