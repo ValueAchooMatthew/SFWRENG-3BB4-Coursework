@@ -1,0 +1,22 @@
+RADIO = OFF,
+
+OFF = (on -> ON_TOP),
+
+ON_TOP = (scan -> SCANNING
+         | reset -> ON_TOP
+         | off -> OFF
+         | lock -> ON_STATION),
+
+ON_STATION = (scan -> SCANNING
+             | reset -> ON_TOP
+             | off -> OFF
+             | lock -> ON_STATION),
+
+SCANNING = (lock -> ON_STATION
+           | end -> ON_BOTTOM
+           | reset -> ON_TOP
+           | off -> OFF),
+
+ON_BOTTOM = (scan -> SCANNING
+            | reset -> ON_TOP
+            | off -> OFF).
