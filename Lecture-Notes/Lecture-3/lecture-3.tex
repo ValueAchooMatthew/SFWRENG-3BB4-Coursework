@@ -1,0 +1,142 @@
+\ifdefined\iscombined
+	\lecturetitle{Labelled Transition Systems}
+	\setcounter{section}{3}
+\else
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 3 - Labelled Transition Systems}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+        colorlinks=true,
+        linkcolor=blue,
+        filecolor=magenta,
+        urlcolor=blue,
+        citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 3 - Labelled Transition Systems}
+
+\newenvironment{example}[1][]{
+	\vspace{1em}
+	\large{\par\noindent\textbf{Ex.}}
+}{\vspace{2.5em}}
+
+\newenvironment{solution}[1][]{
+	\par\noindent\textbf{\large{Solution:}}
+	\par
+	\vspace{1.5em}
+}{\vspace{.5em}}
+
+\newenvironment{directsubsubs}{
+  \makeatletter
+  \renewcommand\thesubsubsection{\thesection.\Roman{subsubsection}}
+  \makeatother
+}{
+  \makeatletter
+  \renewcommand\thesubsubsection{\thesubsection.\Roman{subsubsection}}
+  \makeatother
+}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item LTSs are finite state machines used to graphically represent the FSP description of a process.
+	\begin{itemize}
+		\item Starting states are denoted as a circle with a dot in the middle.
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent the following FSP as an LTS.
+	\begin{align*}
+		\mathtt{A} = (\mathtt{a} \rightarrow \mathtt{B} \; | \; \mathtt{b} \rightarrow \mathtt{C}) \\
+		\mathtt{B} = (\mathtt{a} \rightarrow \mathtt{B} \; | \; \mathtt{b} \rightarrow \mathtt{D}) \\
+		\mathtt{C} = (\mathtt{d} \rightarrow \mathtt{C}) \\
+		\mathtt{D} = (\mathtt{a} \rightarrow \mathtt{C} \; | \; \mathtt{c} \rightarrow \mathtt{B}) \\
+	\end{align*}
+\end{example}
+
+\begin{solution}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-3/imgs/Example-1-LTS.png}
+		\caption{LTS representation of the given FSP.}
+	\end{figure}
+\end{solution}
+
+\begin{itemize}
+	\item FSPs can nest processes within other processes (such as through processes substitution) to make FSPs more concise.
+	\begin{itemize}
+		\item Directly translating an FSP with nested processes into an LTS will yield an incorrect representation of the FSP.
+	\end{itemize}
+	\item An FSP is said to be put into \emph{elementary/normal form} if all nested processes in the FSP are expanded out into separate processes.
+	\begin{itemize}
+		\item FSPs must be put into elementary form to be correctly represented as an LTS.
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent the following FSP as an LTS.
+	\begin{align*}
+		\mathtt{A} &= (\mathtt{a} \rightarrow \mathtt{b} \rightarrow \mathtt{B} \; | \; \mathtt{b} \rightarrow (\mathtt{a} \rightarrow \mathtt{c} \rightarrow \mathtt{A} \; | \; \mathtt{b} \rightarrow \mathtt{B})) \\
+		\mathtt{B} &= (\mathtt{a} \rightarrow \mathtt{c} \rightarrow (\mathtt{a} \rightarrow \mathtt{A} \; | \; \mathtt{b} \rightarrow \mathtt{B}))
+	\end{align*}
+\end{example}
+
+\begin{solution}
+	First, we must put our FSP into normal form.
+	
+	\begin{align*}
+		\mathtt{A} &= (\mathtt{a} \rightarrow \mathtt{B_1} \; | \; \mathtt{b} \rightarrow \mathtt{D}) \\
+		\mathtt{B} &= (\mathtt{a} \rightarrow \mathtt{A_2}) \\
+		\mathtt{D} &= (\mathtt{a} \rightarrow \mathtt{A_1} \; | \; \mathtt{b} \rightarrow \mathtt{B}) \\
+		\mathtt{A_1} &= (\mathtt{c} \rightarrow \mathtt{A}) \\
+		\mathtt{A_2} &= (\mathtt{c} \rightarrow \mathtt{B_2}) \\
+		\mathtt{B_1} &= (\mathtt{b} \rightarrow \mathtt{B}) \\
+		\mathtt{B_2} &= (\mathtt{a} \rightarrow \mathtt{A} \; | \; \mathtt{b} \rightarrow \mathtt{B}) \\
+	\end{align*}
+	
+	Now that our FSP is in elementary form, we can represent it as:
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-3/imgs/Example-2-LTS.png}
+		\caption{LTS representation of the given FSP.}
+	\end{figure}
+\end{solution}
+
+\ifdefined\iscombined
+\newpage
+\else
+  \end{document}
+\fi

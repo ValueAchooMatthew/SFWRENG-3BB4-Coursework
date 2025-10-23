@@ -1,0 +1,157 @@
+\ifdefined\iscombined
+	\lecturetitle{Bisimilarity}
+	\setcounter{section}{5}
+\else
+\documentclass{article}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 5 - Bisimilarity}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 5 - Bisimilarity}
+
+\newcounter{example}
+\newcounter{partctr}[example]
+
+\newenvironment{example}{
+	\refstepcounter{example}
+	\setcounter{partctr}{0}
+	\vspace{1em}
+	\large\noindent\textbf{Ex.}\vspace{0.5em}
+}{\vspace{1.5em}}
+
+\newenvironment{parts}{
+	\begin{enumerate}[
+		label=\textbf{(\alph*)},
+		leftmargin=3.3em,
+		itemsep=0.4em,
+		before=\large
+	]
+	\setcounter{enumi}{\value{partctr}}
+}{
+	\setcounter{partctr}{\value{enumi}}
+	\end{enumerate}
+}
+
+\newenvironment{solution}{
+	\vspace{0.3cm}\par\noindent\large\textbf{Solution:}\par\vspace{0.3em}
+}{\vspace{0.8em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\newcommand{\parts@seriesname}{parts@\theexample}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item The \emph{traces} of a process \texttt{P} to some state \texttt{p} in its LTS representation is the set of all sequences of actions which can be taken to reach \texttt{p}.
+	\begin{itemize}
+		\item The traces of a process to its starting state is denoted by Trace(\texttt{P}).
+	\end{itemize}
+	\item Two processes, \texttt{P}, \texttt{Q} are said to be \emph{equivalent} if for some third process \texttt{R}, $(\mathtt{R} \; || \; \mathtt{P}) = (\mathtt{R} \; || \; \mathtt{Q})$.
+	\begin{itemize}
+		\item \texttt{P} and \texttt{Q} are denoted as being equivalent by $\mathtt{P} \equiv \mathtt{Q}$.
+	\end{itemize}
+	\item If \texttt{P} and \texttt{Q} are sequential or deterministic processes, then $\mathtt{P} \equiv \mathtt{Q} \iff \text{Traces}(\mathtt{P}) = \text{Traces}(\mathtt{Q})$.
+	\item \underline{However}, in any other case, it is not sufficient for the traces of the two processes to be equal, since under parallel composition, two processes with the same traces can behave differently.
+	\begin{itemize}
+		\item For example, for non-deterministic processes \texttt{P} and \texttt{Q} where $\text{Trace}(\mathtt{P}) = \text{Trace}(\mathtt{Q})$, it can be true that $(P \; || \; R)$ can deadlock whereas $(Q \; || \; R)$ does not for some process \texttt{R}.
+	\end{itemize}
+	\item Hence, in the context of concurrent systems, equivalence is redefined as \emph{bisimilarity}.
+	\item Consider the LTS representations of \texttt{P} and \texttt{Q}:
+	\begin{itemize}
+		\item Two states $\mathtt{p} \in \mathtt{P}$ and $\mathtt{q} \in \mathtt{Q}$ are said to be bisimilar if every action at \texttt{p} can be executed at \texttt{q}, and likewise if every action at \texttt{q} can be performed at \texttt{p}.
+		\begin{itemize}
+			\item \texttt{p} and \texttt{q} being bisimilar is denoted $\mathtt{p} \approx \mathtt{q}$.
+			\item Bisimilarity is both associative and commutative.
+			\item Important to note that a single state in \texttt{P} can be bisimilar to multiple states in \texttt{Q} and vice versa.
+		\end{itemize}
+		\item Two processes \texttt{P} and \texttt{Q} are said to be bisimilar if, for every state $\mathtt{p} \in \mathtt{P}$ reachable by traces \emph{t}, those some traces reach a state $\mathtt{q} \in \mathtt{Q}$ which is bisimilar to \texttt{p}.
+	\end{itemize}
+	\item \texttt{P} and \texttt{Q} are denoted as being bisimilar by $\mathtt{P} \approx \mathtt{Q}$.
+	\begin{itemize}
+		\item $\mathtt{P} \approx \mathtt{Q} \implies (\mathtt{P} \; || \; \mathtt{R}) = (\mathtt{P} \; || \; \mathtt{R})$ for all processes \texttt{R}.
+	\end{itemize}
+	%TODO: Provide example
+	\item Bisimilarity cannot distinguish between two processes which can exhbit simultaneity or interleaving
+\end{itemize}
+
+%TODO: Justify solutions
+
+\newpage
+
+\begin{example}
+	Determine whether the following LTSs are bisimilar.
+\end{example}
+
+\begin{parts}
+	\item
+\end{parts}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-5/imgs/Example-1-LTSs.png}
+	\caption{LTSs for part (a).}
+\end{figure}
+
+\begin{solution}
+	They are bisimilar
+\end{solution}
+
+\newpage
+
+\begin{parts}
+	\item
+\end{parts}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-5/imgs/Example-2-LTSs.png}
+	\caption{LTSs for part (b).}
+\end{figure}
+
+\begin{solution}
+	They are not bisimilar
+\end{solution}
+
+\ifdefined\iscombined
+\newpage
+\else
+  \end{document}
+\fi

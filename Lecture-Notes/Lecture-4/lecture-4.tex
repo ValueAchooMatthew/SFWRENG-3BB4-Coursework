@@ -1,0 +1,221 @@
+\ifdefined\iscombined
+	\lecturetitle{Petrinets}
+	\setcounter{section}{4}
+\else
+\documentclass{article}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 4 - Petrinets}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+        colorlinks=true,
+        linkcolor=blue,
+        filecolor=magenta,
+        urlcolor=blue,
+        citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 4 - Petrinets}
+
+\newcounter{example}
+\newcounter{partctr}[example]
+
+\newenvironment{example}{
+	\refstepcounter{example}
+	\setcounter{partctr}{0}
+	\vspace{1em}
+	\large\noindent\textbf{Ex.}\vspace{0.5em}
+}{\vspace{1.5em}}
+
+\newenvironment{parts}{
+	\begin{enumerate}[
+		label=\textbf{(\alph*)},
+		leftmargin=3.3em,
+		itemsep=0.4em,
+		before=\large
+	]
+	\setcounter{enumi}{\value{partctr}}
+}{
+	\setcounter{partctr}{\value{enumi}}
+	\end{enumerate}
+}
+
+\newenvironment{solution}{
+	\vspace{0.3cm}\par\noindent\large\textbf{Solution:}\par\vspace{0.3em}
+}{\vspace{0.8em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\newcommand{\parts@seriesname}{parts@\theexample}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item Petrinets are used to represent concurrent systems.
+	\begin{itemize}
+		\item Petrinets are bipartite graphs.
+		\item An alternative representation to LTSs.
+	\end{itemize}
+	\item There exist different kinds of Petrinets.
+	\item An \emph{elementary} Petrinet is composed of the following elements:
+	\begin{enumerate}
+		\item \emph{Places}.
+		\begin{itemize}
+			\item Places represent a resource (essentially a state) that the system can be in.
+			\item Depicted by a circle.
+		\end{itemize}
+		\item \emph{Transitions}.
+		\begin{itemize}
+			\item Transitions represent an action that a system performs.
+			\item Depicted by a rectangle.
+		\end{itemize}
+		\item \emph{Arcs}.
+		\begin{itemize}
+			\item Arcs represent directed connections between places and transitions.
+			\begin{itemize}
+				\item Since Petrinets are bipartitie, arcs cannot connect places to places or transitions to transitions.
+			\end{itemize}
+			\item Depicted by an arrow
+		\end{itemize}
+		\item \emph{Tokens}.
+		\begin{itemize}
+			\item Tokens represent the current state of the system.
+			\item Tokens exist within places and move between places according to the arcs connecting places to transitions.
+			\item A petrinet can have multiple tokens simultaneously.
+			\item The current position of tokens in the system is depicted by a dot in the place the token resides in.
+		\end{itemize}
+	\end{enumerate}
+	\item Relative to a given transition:
+	\begin{itemize}
+		\item An \emph{input} place is a place which connects to that transition.
+		\item An \emph{output} place is a place which that transition connects to.
+	\end{itemize}
+	\item For a transition to fire, all input places to that transition must have a token inside it.
+	\item Multiple transitions satisfying this condition can fire at this same time.
+	\begin{itemize}
+		\item This is how Petrinets model the simultaneous execution of an action.
+	\end{itemize}
+	\item When a transition fires, all output places are populated with a token and all input places are depopulated of their tokens.
+	\item A given place can be both an input and output place of a transition.
+	\item A \emph{deadlock} describes a situation where tokens are arranged in such a way that there exists no valid transition for any tokens to take.
+	\item The \emph{firing sequence} of an elementary Petrinet are sequences of valid transitions that can be taken based on the initial location of tokens.
+	\item The Petrinet representation of an LTS representing a concurrent system can be attained by representing the processes in parallel composition as Petrinets and ``glueing'' together shared transitions.
+	\item \emph{Labelled elementary Petrinets} are essentially the same as elementary Petrinets, with the disintion being that if two transitions can be fired simultaenously, they must have distinct labels.
+	\item \emph{Reachability graphs} are finite state machines used to represent the behaviour of Petrinets in LTS form.
+	\begin{itemize}
+		\item For a given FSP, the reachability graph of the FSP's Petrinet representation is equivalent to the FSPs LTS representation.
+		\item Reachability graphs may allow for actions to be executed simultaneously.
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent the following FSPs:
+
+	\begin{align*}
+		\mathtt{MAKER} &= \mathtt{make} \rightarrow \mathtt{ready} \rightarrow \mathtt{MAKER} \\
+		\mathtt{USER} &= \mathtt{ready} \rightarrow \mathtt{user} \rightarrow \mathtt{USER} \\
+		||\mathtt{MAKER\_USER} &= \mathtt{MAKER} \; || \; \mathtt{USER}
+	\end{align*}
+\end{example}
+
+\begin{parts}
+	\item As LTSs.
+\end{parts}
+
+\begin{solution}
+	%TODO: Fix my adding initial states.
+	The LTSs for these FSPs are given by:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/Maker-LTS.png}
+		\caption{LTS representation of \texttt{MAKER}.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/User-LTS.png}
+		\caption{LTS representation of \texttt{USER}.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/Maker_User-LTS.png}
+		\caption{LTS representation of \texttt{MAKER\_USER}.}
+	\end{figure}
+\end{solution}
+
+\begin{parts}
+	\item As Petrinets.
+\end{parts}
+
+\begin{solution}
+	The Petrinets for these FSPs are given by:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/Maker-Petrinet.png}
+		\caption{Petrinet representation of \texttt{MAKER}.}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/User-Petrinet.png}
+		\caption{Petrinet representation of \texttt{USER}.}
+	\end{figure}
+
+	By glueing these two Petrinets by the common transition ``\texttt{ready}'', we can easily represent the Petrinet for \texttt{MAKER\_USER} as:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/Maker_User-Petrinet.png}
+		\caption{Petrinet representation of \texttt{MAKER\_USER}.}
+	\end{figure}
+\end{solution}
+
+\begin{example}
+	Construct the reachability graph for the Petrinet representation of the \texttt{MAKER\_USER} FSP.
+\end{example}
+
+\begin{solution}
+	The reachability graph for the Petrinet representation of \texttt{MAKER\_USER} is given by:
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Lecture-Notes/Lecture-4/imgs/Reachability-Graph.png}
+		\caption{Reachability graph of \texttt{MAKER\_USER} Petrinet.}
+	\end{figure}
+\end{solution}
+
+\ifdefined\iscombined
+\newpage
+\else
+  \end{document}
+\fi

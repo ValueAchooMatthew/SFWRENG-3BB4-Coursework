@@ -1,0 +1,92 @@
+\def\iscombined{}
+\documentclass{article}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{All Lecture Notes for SFWRENG 3DB3}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\newcommand{\lecturetitle}[1]{
+	\refstepcounter{section}
+	\addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
+	\vspace*{.25em}
+	\begin{center}
+		\LARGE #1
+	\end{center}
+	\vspace{1.5em}
+}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{All Lecture Notes for SFWRENG 3DB3}
+
+\newcounter{example}
+\newcounter{partctr}[example]
+
+\newenvironment{example}{
+	\refstepcounter{example}
+	\setcounter{partctr}{0}
+	\vspace{1em}
+	\large\noindent\textbf{Ex.}\vspace{0.5em}
+}{\vspace{1.5em}}
+
+\newenvironment{parts}{
+	\begin{enumerate}[
+		label=\textbf{(\alph*)},
+		leftmargin=3.3em,
+		itemsep=0.4em,
+		before=\large
+	]
+	\setcounter{enumi}{\value{partctr}}
+}{
+	\setcounter{partctr}{\value{enumi}}
+	\end{enumerate}
+}
+
+\newenvironment{solution}{
+	\vspace{0.3cm}\par\noindent\large\textbf{Solution:}\par\vspace{0.3em}
+}{\vspace{0.8em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\newcommand{\parts@seriesname}{parts@\theexample}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\tableofcontents
+\newpage
+
+\input{includes.tex}
+
+\end{document}

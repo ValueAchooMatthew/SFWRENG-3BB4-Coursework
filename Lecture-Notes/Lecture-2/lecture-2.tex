@@ -1,0 +1,195 @@
+\ifdefined\iscombined
+	\lecturetitle{Finite State Processes}
+	\setcounter{section}{2}
+\else
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+%TODO: Consider changing formatting so examples/notes are not side by side
+
+\title{Lecture 2 - Finite State Processes}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+        colorlinks=true,
+        linkcolor=blue,
+        filecolor=magenta,
+        urlcolor=blue,
+        citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 2 - Finite State Processes}
+
+\newenvironment{example}[1][]{
+	\vspace{1em}
+	\large{\par\noindent\textbf{Ex.}}
+}{\vspace{2.5em}}
+
+\newenvironment{solution}[1][]{
+	\par\noindent\textbf{\large{Solution:}}
+	\par
+	\vspace{1.5em}
+}{\vspace{.5em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item FSPs are algebraic models used to represent the behaviour of sequential and concurrent processes.
+	\begin{itemize}
+		\item FSPs are composed of \texttt{PROCESSES} and \texttt{actions}.
+		\begin{itemize}
+			\item An \texttt{action} is a thing which the system does.
+			\begin{itemize}
+				\item An \texttt{action} must be atomic (can only do one thing).
+			\end{itemize}
+			\item A \texttt{PROCESS} perform an action and calls another process.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent a process which performs action \texttt{x} and then calls another processes \texttt{P} as an FSP.
+\end{example}
+
+\begin{solution}
+	\begin{align*}
+		(\mathtt{x} \rightarrow \mathtt{P})
+	\end{align*}
+\end{solution}
+
+\begin{itemize}
+	\item Repetitive behaviour is modelled by recursively calling processes.
+\end{itemize}
+
+\begin{example}
+	Represent a simple on-off switch as an FSP.
+\end{example}
+
+\begin{solution}
+	\begin{align*}
+		\mathtt{SWITCH} &= \mathtt{OFF} \\
+		\mathtt{OFF} &= \left( \mathtt{on} \rightarrow \mathtt{OFF} \right) \\
+		\mathtt{ON} &= \left( \mathtt{off} \rightarrow \mathtt{OFF} \right) \\
+	\end{align*}
+\end{solution}
+
+\begin{itemize}
+	\item \emph{Process substitution} is the act of replacing processes with their definitions to produce more succinct FSPs
+\end{itemize}
+
+\begin{example}
+	Using process substitution, use the FSP for Example 2 to product an FSP for an on-off switch with only two processes.
+\end{example}
+
+\begin{solution}
+	\begin{align*}
+		\mathtt{SWITCH} &= \mathtt{OFF} \\
+		\mathtt{OFF} &= \left( \mathtt{on} \rightarrow ( \mathtt{off} \rightarrow \mathtt{OFF}) \right) \\
+	\end{align*}
+\end{solution}
+
+\begin{itemize}
+	\item FSPs do not need to be deterministic.
+	\item In FSP \emph{choices} allow a process to execute processes non-deterministically.
+	\begin{itemize}
+		\item Denoted as ``\texttt{|}''.
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent a process which can perform action \texttt{x} then execute process \texttt{P} or perform \texttt{y} then execute \texttt{Q}.
+\end{example}
+
+\begin{solution}
+	\begin{align*}
+		(\mathtt{x} \rightarrow \mathtt{P} \; | \; \mathtt{y} \rightarrow \texttt{Q})
+	\end{align*}
+\end{solution}
+
+\begin{itemize}
+	\item A \emph{boolean condition} is a statement which can either be true or false.
+	\begin{itemize}
+		\item A boolean condition is said to have a \emph{finite domain} if there exists a finite number of cases needed to be checked to evaluate it as true or false.
+		\begin{itemize}
+			%TODO: Not entirely sure this is correct
+			\item For example, the boolean condition \texttt{x = 0} has a finite domain, however \texttt{x > 0} does not.
+		\end{itemize}
+	\end{itemize}
+	\item A \emph{guarded action} is an action in a choice can only be executed so long as some boolean condition is met.
+	\begin{itemize}
+		\item The condition allowing a guarded action to be taken is specified with the \texttt{when} keyword.
+		\item The boolean condition must have a finite domain.
+	\end{itemize}
+\end{itemize}
+
+\begin{example}
+	Represent a process which can perform action \texttt{x} then \texttt{P} \underline{ONLY IF} a condition \texttt{B} is true or perform \texttt{y} then execute \texttt{Q}.
+\end{example}
+
+\begin{solution}
+	\begin{align*}
+		(\mathtt{when} \; \mathtt{B} \; \mathtt{x} \rightarrow \mathtt{P} \; | \; \mathtt{y} \rightarrow \texttt{Q}) \\
+	\end{align*}
+\end{solution}
+
+\begin{itemize}
+	\item The \emph{alphabet} of a process is defined as the set of all possible actions that a process can perform.
+	\begin{itemize}
+		\item The FSP representation of a representation implicitly defines the alphabet of a process.
+		\item If two FSPs have no actions in common, their alphabets are said to be \emph{disjoint}.
+		\item An action is said to be \emph{shared} between two processes if it exists in both of their alphabets.
+	\end{itemize}
+	\item An \emph{alphabet extension} is used to specify additional actions available to a process not defined in its FSP.
+\end{itemize}
+
+\begin{itemize}
+	\item If two processes are running concurrently, they are said to be running in \emph{parallel composition}.
+	\item The actions of a system composed of two concurrently running processes is an interleaving of the actions of each process.
+	\begin{itemize}
+		\item The order of the actions taken by each system \underline{must} be preserved.
+		\begin{itemize}
+			\item For example, if a process \texttt{P} can execute action \texttt{a} then \texttt{b}, and process \texttt{Q} can execute \texttt{c}, a valid output of the system \texttt{(P||Q)} could be $\mathtt{a} \rightarrow \mathtt{c} \rightarrow \mathtt{b}$ but $\mathtt{b} \rightarrow \mathtt{a} \rightarrow \mathtt{c}$ would be invalid, since in \texttt{P}, \texttt{a} must be executed before \texttt{b}.
+		\end{itemize}
+	\end{itemize}
+	\item If two processes running in parallel composition have shared actions, then the shared actions must be executed simultaneously by both processes.
+	\item FSPs use the parallel composition operator to declare two processes as running concurrently.
+	\begin{itemize}
+		\item Denoted as ``\texttt{||}''
+		\item The parallel composition operator is both associative and commutative.
+	\end{itemize}
+	\item Petrinets allow for much easier graphical representations of concurrent systems than LTSs.
+\end{itemize}
+
+\ifdefined\iscombined
+\newpage
+\else
+  \end{document}
+\fi

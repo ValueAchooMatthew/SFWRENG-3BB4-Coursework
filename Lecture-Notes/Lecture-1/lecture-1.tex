@@ -1,0 +1,103 @@
+\ifdefined\iscombined
+	\lecturetitle{Introduction}
+	\setcounter{section}{1}
+\else
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 1 - Introduction}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+        colorlinks=true,
+        linkcolor=blue,
+        filecolor=magenta,
+        urlcolor=blue,
+        citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 1 - Introduction}
+
+\newenvironment{directsubsubs}{
+  \makeatletter
+  \renewcommand\thesubsubsection{\thesection.\Roman{subsubsection}}
+  \makeatother
+}{
+  \makeatletter
+  \renewcommand\thesubsubsection{\thesubsection.\Roman{subsubsection}}
+  \makeatother
+}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item A \emph{sequential} system is a system composed of a single part which performs actions according to some defined order.
+	\item A \emph{processing element} is defined as an environment in which a process is run, which is capable of allocating resources such as memory to the process running on it.
+	\begin{itemize}
+		\item By default, the word ``process'' refers to the execution of a sequential system.
+	\end{itemize}
+	\item \emph{Concurrent} and \emph{parallel} systems are systems composed of independently operating parts functioning together to perform some task.
+	\begin{itemize}
+		\item Concurrent and parallel systems are not the same thing, although they are often used interchangeably.
+	\end{itemize}
+	\item Concurrent systems consist of processes which perform actions with \underline{logical} simultaneity.
+	\begin{itemize}
+		\item Two concurrently running processes interleave their actions on the same processing element.
+	\end{itemize}
+	\item Parallel systems consist of processes which perform actions with \underline{physical} simultaneity.
+	\begin{itemize}
+		\item Two processes running in parallel require that each process run on a separate processing element.
+	\end{itemize}
+	\item Concurrent systems can be described as the composition of two or more sequential processes.
+	\item There exist many ways to model concurrent systems:
+	\begin{enumerate}
+		\item \emph{Finite State Processes} (FSPs)
+		\begin{itemize}
+			\item Finite State Processes are an algebraic description of sequential and concurrent processes.
+			\item Also called \emph{process algebras}.
+		\end{itemize}
+		\item \emph{Labelled Transition Systems} (LTSs)
+		\begin{itemize}
+			\item LTSs are extensions of finite state machines used to visually represent sequential and concurrent processes.
+			\item \emph{Labelled Transition System Analyzers} (LTSAs) are tools used to visualize, animate, and analyze the behaviour of concurrent systems.
+		\end{itemize}
+		\item \emph{Petrinets}
+		\begin{itemize}
+			\item Petrinets are an alternate visualization of concurrent processes.
+		\end{itemize}
+	\end{enumerate}
+\end{itemize}
+
+\ifdefined\iscombined
+\newpage
+\else
+  \end{document}
+\fi

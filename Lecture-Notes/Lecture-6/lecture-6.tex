@@ -1,0 +1,113 @@
+\ifdefined\iscombined
+	\lecturetitle{Actions and Labels}
+	\setcounter{section}{6}
+\else
+\documentclass{article}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 6 - Actions and Labels}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 6 - Actions and Labels}
+
+\newcounter{example}
+\newcounter{partctr}[example]
+
+\newenvironment{example}{
+	\refstepcounter{example}
+	\setcounter{partctr}{0}
+	\vspace{1em}
+	\large\noindent\textbf{Ex.}\vspace{0.5em}
+}{\vspace{1.5em}}
+
+\newenvironment{parts}{
+	\begin{enumerate}[
+		label=\textbf{(\alph*)},
+		leftmargin=3.3em,
+		itemsep=0.4em,
+		before=\large
+	]
+	\setcounter{enumi}{\value{partctr}}
+}{
+	\setcounter{partctr}{\value{enumi}}
+	\end{enumerate}
+}
+
+\newenvironment{solution}{
+	\vspace{0.3cm}\par\noindent\large\textbf{Solution:}\par\vspace{0.3em}
+}{\vspace{0.8em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\newcommand{\parts@seriesname}{parts@\theexample}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{center}
+\textbf{These notes are a bit of a stub because I don't totally understand what this lecture was talking about, I'll try to update with better notes in future.}\\
+\end{center}
+
+\begin{itemize}
+	\item \emph{Action relabelling} is the act of renaming actions in a process.
+	\begin{itemize}
+		\item This is done to force concurrently running processes to execute certain actions simultaneously, even if they have different names.
+	\end{itemize}
+	\item Actions can be relabelled with a prefix.
+	\item \emph{Action hiding} is the act of removing certain actions from the alphabet of a process.
+	\begin{itemize}
+		\item This is done to prevent actions with the same name from being shared between two concurrently running processes.
+		%TODO: WHAT?
+		\item Silent actions are relabelled as $\tau$.
+	\end{itemize}
+	%TODO: WHAT?
+	\item \emph{Structural diagrams} are used to represent:
+	\begin{enumerate}
+		\item Concurrent systems.
+		\item Action relabelling.
+		\item Action hiding.
+	\end{enumerate}
+	\item An \emph{active} process is a process which initiates actions.
+	\item A \emph{passive} process is a process which responds to actions.
+\end{itemize}
+
+\ifdefined\iscombined
+	\newpage
+\else
+	\end{document}
+\fi

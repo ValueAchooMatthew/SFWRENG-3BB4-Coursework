@@ -1,0 +1,151 @@
+\ifdefined\iscombined
+	\lecturetitle{Mutual Exclusion and Locks}
+	\setcounter{section}{7}
+\else
+\documentclass{article}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{mathtools}
+
+\title{Lecture 7 - Mutual Exclusion and Locks}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{Lecture 7 - Mutual Exclusion and Locks}
+
+\newcounter{example}
+\newcounter{partctr}[example]
+
+\newenvironment{example}{
+	\refstepcounter{example}
+	\setcounter{partctr}{0}
+	\vspace{1em}
+	\large\noindent\textbf{Ex.}\vspace{0.5em}
+}{\vspace{1.5em}}
+
+\newenvironment{parts}{
+	\begin{enumerate}[
+		label=\textbf{(\alph*)},
+		leftmargin=3.3em,
+		itemsep=0.4em,
+		before=\large
+	]
+	\setcounter{enumi}{\value{partctr}}
+}{
+	\setcounter{partctr}{\value{enumi}}
+	\end{enumerate}
+}
+
+\newenvironment{solution}{
+	\vspace{0.3cm}\par\noindent\large\textbf{Solution:}\par\vspace{0.3em}
+}{\vspace{0.8em}}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsubsection}{\thesection.\alph{subsection}.\Roman{subsubsection}}
+\makeatletter
+
+\sectionfont{\fontsize{12}{12}\bfseries}
+\subsectionfont{\fontsize{10}{12}\normalfont}
+\subsubsectionfont{\fontsize{10}{12}\normalfont}
+
+\newcommand{\parts@seriesname}{parts@\theexample}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\fi
+
+\begin{itemize}
+	\item A \emph{critical section} is a piece of code where data is shared between concurrently running processes.
+	\begin{itemize}
+		\item Data in the critical section can be accessed and modified by the processes.
+		\begin{itemize}
+			\item \emph{Updates} refer to actions which modify data in the critical section.
+		\end{itemize}
+	\end{itemize}
+	\item \emph{Interference} occurs when updates are performed simultaneously by concurrently running processes.
+	\item A \emph{race condition} refers to an unintended side effect of interference.
+	\begin{itemize}
+		\item Race conditions occur when concurrent processes are allowed to access data at the same time, which makes the system's behaviour unpredictable since its behaviour may depend on which process is able to access/modify the data first, which the system does not control for.
+	\end{itemize}
+	\item Robust concurrent systems cannot allow for interference.
+	\item A \emph{semaphore} is a variable used to prevent interference in concurrent systems.
+	\begin{itemize}
+		\item Semaphores can only take on non-negative integer values.
+	\end{itemize}
+	\item Only the following operations can be performed on a given semaphore \texttt{s}.
+	\begin{itemize}
+		%NOTE: Not fully sure about semaphore descriptions
+		\item \texttt{up(s)}
+		\begin{itemize}
+			\item If a process is blocked on \texttt{s}, then the process is awakened, otherwise, \texttt{s} is awakened.
+		\end{itemize}
+		\item \texttt{down(s)}
+		\begin{itemize}
+			\item If $\mathtt{s} > 0$, the \texttt{s} is decremented, otherwise, the process calling \texttt{down(s)} is blocked.
+		\end{itemize}
+	\end{itemize}
+	\item \emph{Binary semaphores} are a special type of semaphore which can only take on the values of 0 or 1.
+	\begin{itemize}
+		\item Binary semaphores are used to implement locks on data.
+	\end{itemize}
+
+	\item \emph{Mutual exclusion} is the process of preventing two concurrently running process from being able to modify data at the same time to prevent interference.
+	\begin{itemize}
+		\item Mutual exclusion is implemented using \emph{locks}.
+		\begin{itemize}
+			\item When a process wants to be able to read/write to data, it must request a lock for that data. If no other process has a lock on the data, the lock is acquired by the process, giving it exclusive access to that data until the lock is released.
+		\end{itemize}
+	\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{itemize}
+
+\ifdefined\iscombined
+	\newpage
+\else
+	\end{document}
+\fi
