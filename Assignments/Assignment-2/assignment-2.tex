@@ -1,0 +1,908 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{etoolbox}
+\usepackage{bm}
+\usepackage{diagbox}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{listings}
+\lstset{breaklines=true}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage[margin=1in]{geometry}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  breaklines=true,
+  frame=single
+}
+
+\renewcommand{\thesubsubsection}{\Roman{subsubsection}}
+\title{SFWRENG-3BB4 Assignment 2}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+\makeatletter
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, $\langle$\href{mailto:farahm11@mcmaster.ca}{farahm11@mcmaster.ca}$\rangle$, 400468251}
+\fancyhead[R]{SFWRENG-3BB4 Assignment 2}
+
+\setlength\parindent{0pt}
+\allowdisplaybreaks
+
+\makeatother
+
+\setlist{listparindent=\parindent}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\newcounter{question}
+\renewcommand{\thequestion}{\arabic{question}}
+
+\newenvironment{question}[1][]{
+	\newpage
+	\ifx\\#1\\
+		\refstepcounter{question}
+	\else
+		\setcounter{question}{#1}
+	\fi
+	\addcontentsline{toc}{section}{Question \thequestion}
+	\large{\par\noindent\textbf{Question \thequestion}}\vspace{.50cm}\par\noindent
+}{\vspace{0.8em}}
+
+\newenvironment{solution}{
+	\vspace{0.4cm}\par\noindent\large\textbf{{Solution:}}\par\vspace{1em}
+}{\vspace{0.1em}}
+
+\newcounter{partslist}
+
+\makeatletter
+\newcommand{\parts@seriesname}{parts@\thequestion}
+
+\newenvironment{parts}{
+	\edef\parts@ser{\parts@seriesname}
+	\ifcsname\parts@ser\endcsname
+	\begin{enumerate}[resume=\parts@ser,label=\textbf{\thequestion.\alph*)},leftmargin=3.3em,itemsep=0.4em,before=\large]
+	\else
+		\begin{enumerate}[series=\parts@ser,label=\textbf{\thequestion.\alph*)},leftmargin=3.3em,itemsep=0.4em,before=\large]
+		\expandafter\gdef\csname\parts@ser\endcsname{1}
+	\fi
+	\let\oldpartsitem\item
+	\renewcommand{\item}{
+		\stepcounter{currentstep}
+		\oldpartsitem
+		\phantomsection
+	}
+}{
+	\end{enumerate}
+}
+
+\makeatother
+
+\makeatletter
+
+\newcounter{currentstep}
+\renewcommand{\thecurrentstep}{\Roman{currentstep}}
+
+\newenvironment{steps}{
+	\let\steps@olditem\item
+	\begin{list}{}{
+		\setlength\leftmargin{3.15em}
+		\setlength\itemsep{0.4em}
+		\setlength\topsep{0.8em}
+	}
+	\renewcommand{\item}{
+		\stepcounter{currentstep}
+		\steps@olditem[\textbf{(\thecurrentstep)}]
+	}
+}{
+	\end{list}
+	\let\item\steps@olditem
+}
+
+\makeatother
+
+\AtBeginEnvironment{parts}{\setcounter{currentstep}{0}}
+\AtBeginEnvironment{question}{\setcounter{currentstep}{0}}
+
+%FIX: MAKE CENTER OPTIONAL SO SOLUTION FSPS LOOK GOOD
+\newenvironment{fsp}{
+	\begin{center}
+	\fontfamily{cmtt} \selectfont
+}{
+	\end{center}
+}
+
+\begin{document}
+
+\maketitle
+\pagestyle{fancy}
+
+\tableofcontents
+
+\begin{question}
+	Consider a group of $k$ philosophers. Each philosopher either thinks or eats cookies (one serving at a time) or drinks cola (one bottle at a time). The cookie dispenser has a capacity of $M$ servings, and the cola dispenser has a capacity of $N$ bottles. When a dispenser is empty a philosopher must wait until a servant refills it. If any dispenser is empty, the server refills it with either $M$ servings of cookies or $N$ bottles of cola, depending on which dispenser was empty. Refilling must be done as soon as possible, so they have priority over dispensing cookies and cola. There is no partial refilling of the dispensers. Assume that initially, both dispensers are full.
+\end{question}
+
+\begin{parts}
+	\item Model the behaviour of the system as an FSP. Write a safety property that, when composed with your system, will check if no cookies or cola are dispensed when their respective dispensers are empty. Compose this property with your system and verify that it holds.
+\end{parts}
+
+\begin{solution}
+	\begin{align*}
+		&\mathtt{PHILOSOPHER} = ( \\
+		&\qquad \mathtt{think} \rightarrow \mathtt{PHILOSOPHER} \; | \; \mathtt{get\_cookie} \rightarrow \mathtt{eat\_cookie} \rightarrow \mathtt{PHILOSOPHER} \\
+		&\qquad | \; \mathtt{get\_cola} \rightarrow \mathtt{drink\_cola} \rightarrow \mathtt{PHILOSOPHER} \\
+		&). \\
+		&\mathtt{const} \; \mathtt{K} = 3. \\
+		&\mathtt{range} \; \mathtt{Phil} = 1..K. \\
+		&||\mathtt{PHILOSOPHERS} = (\mathtt{forall}[i:\mathtt{Phil}] \; \mathtt{phil}[i] : \mathtt{PHILOSOPHER}). \\
+		&\mathtt{SERVANT} = (\mathtt{fill\_cookies} \rightarrow \mathtt{SERVANT} \; | \; \mathtt{fill\_cola} \rightarrow \mathtt{SERVANT}). \\
+		&\mathtt{const} \; \mathtt{M} = 3. \\
+		&\mathtt{range} \; \mathtt{Cookies} = 0..M. \\
+		&\mathtt{COOKIES} = \mathtt{COOKIES}[0], \\
+		&\mathtt{COOKIES}[s : \mathtt{Cookies}] = (\ \mathtt{when}\ (s > 0)\ \mathtt{get\_cookie} \rightarrow \mathtt{COOKIES}[s - 1]\; | \; \mathtt{fill\_cookies} \rightarrow \mathtt{COOKIES}[M]\ ). \\
+		&\mathtt{const}\ \mathtt{N} = 2. \\
+		&\mathtt{range}\ \mathtt{Cola} = 0..N. \\
+		&\mathtt{COLA} = \mathtt{COLA}[0], \\
+		&\mathtt{COLA}[s : \mathtt{Cola}] = (\ \mathtt{when}\ (s > 0)\ \mathtt{get\_cola} \rightarrow \mathtt{COLA}[s - 1]\; | \; \mathtt{fill\_cola} \rightarrow \mathtt{COLA}[N]\ ). \\
+		&\mathtt{property}\ \mathtt{SAFETY\_COLA} = \mathtt{SAFETY\_COLA}[N], \\
+		&\mathtt{SAFETY\_COLA}[s : \mathtt{Cola}] = (\ \mathtt{when}\ (s == 0)\ \mathtt{fill\_cola} \rightarrow \mathtt{SAFETY\_COLA}[N]\ ). \\
+		&\mathtt{property}\ \mathtt{SAFETY\_COOKIES} = \mathtt{SAFETY\_COOKIES}[M], \\
+		&\mathtt{SAFETY\_COOKIES}[s : \mathtt{Cookies}] = (\ \mathtt{when}\ (s == 0)\ \mathtt{fill\_cookies} \rightarrow \mathtt{SAFETY\_COOKIES}[M]\ ). \\
+		&||\mathtt{SYSTEM} = (\ \mathtt{PHILOSOPHERS}\; ||\; \mathtt{COOKIES}\; ||\; \mathtt{COLA}\; ||\; \mathtt{SERVANT}\; ||\; \mathtt{SAFETY\_COLA}\; ||\; \mathtt{SAFETY\_COOKIES}\ ).
+	\end{align*}
+\end{solution}
+
+\begin{parts}
+	\item Model the behaviour of the system as an elementary Petri net.
+\end{parts}
+
+\begin{solution}
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-1-b.png}
+			\caption{Elementary Petri net representation of the system.}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{parts}
+	\item Model the behaviour of the system as a place/transition Petri net.
+\end{parts}
+
+\begin{solution}
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-1-c.png}
+			\caption{Place/transition Petri net representation of the system.}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{parts}
+	\item Model the behaviour of the system as a coloured Petri net.
+\end{parts}
+
+\begin{solution}
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-1-d.png}
+			\caption{Coloured Petri net representation of the system.}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{parts}
+	\item Discuss the differences between the FSP and the various Petri net solutions.
+\end{parts}
+
+\begin{solution}
+	The primary difference between the FSP and Petri net solutions, besides the obvious fact that the Petri nets provide a graphical, as opposed to an algebraic, description of the problem, is that FSPs are much more difficult to perform rigorous error/proof checking on in comparison to Petri nets.
+\end{solution}
+
+\begin{parts}
+	\item Implement the system in a Java program.
+\end{parts}
+
+\begin{solution}
+	\begin{lstlisting}[language=Java, caption={Concurrent system for philosophers, cookie and cola dispensers}, label={lst:philosophers}]
+class Dispenser {
+    private final String name;
+    private final int capacity;
+    private int amount;
+
+    public Dispenser(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+        this.amount = capacity;
+    }
+
+    public synchronized void getItem(String philosopherName) throws InterruptedException {
+        while (amount == 0) {
+            wait();
+        }
+        amount--;
+        notifyAll();
+    }
+
+    public synchronized void refill() {
+        amount = capacity;
+        notifyAll();
+    }
+
+    public synchronized boolean isEmpty() {
+        return amount == 0;
+    }
+}
+
+class Servant extends Thread {
+    private final Dispenser cookies;
+    private final Dispenser cola;
+
+    public Servant(Dispenser cookies, Dispenser cola) {
+        this.cookies = cookies;
+        this.cola = cola;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                synchronized (this) {
+                    if (cookies.isEmpty()) {
+                        cookies.refill();
+                    }
+                    if (cola.isEmpty()) {
+                        cola.refill();
+                    }
+                }
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    }
+}
+
+class Philosopher extends Thread {
+    private final String name;
+    private final Dispenser cookies;
+    private final Dispenser cola;
+
+    public Philosopher(String name, Dispenser cookies, Dispenser cola) {
+        this.name = name;
+        this.cookies = cookies;
+        this.cola = cola;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                think();
+                eatCookies();
+                drinkCola();
+            }
+        } catch (InterruptedException e) {
+        }
+    }
+
+    private void think() throws InterruptedException {
+        Thread.sleep((int) (Math.random() * 1000));
+    }
+
+    private void eatCookies() throws InterruptedException {
+        cookies.getItem(name);
+        Thread.sleep((int) (Math.random() * 500));
+    }
+
+    private void drinkCola() throws InterruptedException {
+        cola.getItem(name);
+        Thread.sleep((int) (Math.random() * 500));
+    }
+}
+
+public class PhilosopherSystem {
+    public static void main(String[] args) {
+        final int K = 5; // number of philosophers
+        final int M = 3; // cookie capacity
+        final int N = 2; // cola capacity
+
+        Dispenser cookies = new Dispenser("cookies", M);
+        Dispenser cola = new Dispenser("cola", N);
+
+        Servant servant = new Servant(cookies, cola);
+        servant.start();
+
+        for (int i = 0; i < K; i++) {
+            new Philosopher("Philosopher " + (i + 1), cookies, cola).start();
+        }
+    }
+}
+\end{lstlisting}
+
+\end{solution}
+
+\begin{question}
+	A museum allows visitors to enter through the east entrance and leave through its west exit. Arrivals and departures are signalled to the museum by turnstiles at the museum's entrance and exit. On opening, the museum director signals to the controller that the museum is open and then the controller permits both arrivals and departures. On closing, the director signals to the controller that the museum is closed, at which point only departures are permitted by the controller. \\
+
+	As an FSP, the museum system consists of the processes \texttt{EAST}, \texttt{WEST}, \texttt{CONTROL}, and \texttt{Director}.
+\end{question}
+
+\begin{parts}
+	\item Draw the structure diagram for the museum and provide an FSP description for each of the processes and their overall composition.
+\end{parts}
+
+\begin{solution}
+
+	\begin{steps}
+		\item Draw the structure diagram.
+	\end{steps}
+
+	The structure diagram for the museum can be given by:
+
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-2-a.png}
+			\caption{Structure diagram for the \texttt{MUSEUM} system.}
+		\end{center}
+	\end{figure}
+
+	\begin{steps}
+		\item Provide an FSP description.
+	\end{steps}
+
+	\begin{align*}
+		&\mathtt{EAST} = (\mathtt{arrive} \rightarrow \mathtt{EAST}). \\\\
+		&\mathtt{WEST} = (\mathtt{depart} \rightarrow \mathtt{WEST}). \\\\
+		&\mathtt{CONTROL} = \mathtt{CLOSED}, \\\\
+		&\mathtt{CLOSED} = (\mathtt{open} \rightarrow \mathtt{OPEN}), \\\\
+		&\mathtt{OPEN} = ( \\
+		& \qquad \mathtt{arrive} \rightarrow \mathtt{OPEN} \\
+		& \qquad | \; \mathtt{depart} \rightarrow \mathtt{OPEN} \\
+		& \qquad | \; \mathtt{close} \rightarrow \mathtt{CLOSING} \\
+		&). \\\\
+		&\mathtt{CLOSING} = (\mathtt{depart} \rightarrow \mathtt{CLOSING}). \\\\
+		&\mathtt{DIRECTOR} = (\mathtt{open} \rightarrow \mathtt{close} \rightarrow \mathtt{DIRECTOR}). \\\\
+		&\mathtt{MUSEUM} = (\mathtt{EAST} \; || \; \mathtt{WEST} \; || \; \mathtt{CONTROL} \; || \; \mathtt{DIRECTOR}).
+	\end{align*}
+\end{solution}
+
+\begin{parts}
+	\item Model the above scenario with any valid Petri net.
+\end{parts}
+
+\begin{solution}
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-2-b.png}
+			\caption{Structure diagram for the \texttt{MUSEUM} system.}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{parts}
+	\item Provide the Java classes that implement each one of the above FSP processes.
+\end{parts}
+
+\begin{solution}
+\begin{lstlisting}[language=Java, caption={Concurrent system for museum entry and exit control}, label={lst:museum}]
+class MuseumController {
+    private boolean open = false;
+
+    public synchronized void openMuseum() {
+        open = true;
+        notifyAll();
+    }
+
+    public synchronized void closeMuseum() {
+        open = false;
+        notifyAll();
+    }
+
+    public synchronized void enter() throws InterruptedException {
+        while (!open) {
+            wait();
+        }
+    }
+
+    public synchronized void exit() throws InterruptedException {
+        while (!open && Thread.activeCount() > 2) {
+            wait();
+        }
+    }
+}
+
+class Director extends Thread {
+    private final MuseumController controller;
+
+    public Director(MuseumController controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void run() {
+        try {
+            controller.openMuseum();
+            Thread.sleep(1000);
+            controller.closeMuseum();
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+}
+
+class Visitor extends Thread {
+    private final MuseumController controller;
+
+    public Visitor(MuseumController controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void run() {
+        try {
+            controller.enter();
+            Thread.sleep((int) (Math.random() * 1000));
+            controller.exit();
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+}
+
+public class MuseumSystem {
+    public static void main(String[] args) throws InterruptedException {
+        MuseumController controller = new MuseumController();
+        Director director = new Director(controller);
+        director.start();
+
+        for (int i = 0; i < 5; i++) {
+            new Visitor(controller).start();
+            Thread.sleep(200);
+        }
+    }
+}
+\end{lstlisting}
+
+\end{solution}
+
+\begin{question}
+	Specify a safety property for the car park problem detailed in lecture notes 7 or chapter 5 of the textbook, which asserts that the car park does not overflow. Additionally, specify a progress property which asserts that cars eventually enter the car park. If car departure is a lower priority than car arrival, does starvation occur?
+\end{question}
+
+\begin{solution}
+
+	\begin{steps}
+		\item Specify safety and progress properties.
+	\end{steps}
+	The property:
+
+	\begin{align*}
+		&\mathtt{property} \; \mathtt{PREVENTS\_OVERFLOW} = \mathtt{SPOTS}[0] \\\\
+		&\mathtt{SPOTS}[i:0..N] = ( \\
+		& \qquad \mathtt{when}(i < N) \; \mathtt{arrive} \rightarrow \mathtt{SPOTS}[i + 1] \\
+		& \qquad | \; \mathtt{when}(i > 0) \; \mathtt{depart} \rightarrow \mathtt{SPOTS}[i - 1] \\
+		& \qquad | \; \mathtt{when}(i == N) \; \mathtt{arrive} \rightarrow \mathtt{ERROR} \\
+		&). \\
+	\end{align*}
+
+	is a safety property for the car park system that prevents the car park from overflowing. Furthermore, the properties:
+
+	\begin{align*}
+		\mathtt{property} \; \mathtt{WILL\_ARRIVE} &= \{\mathtt{arrive}\} \\
+		\mathtt{property} \; \mathtt{WILL\_DEPART} &= \{\mathtt{depart}\} \\
+	\end{align*}
+
+	ensures that cars eventually arrive at the car park.
+
+	\begin{steps}
+		\item Verify if starvation occurs.
+	\end{steps}
+
+	If departures are of a lower priority than arrivals, neither the \texttt{arrive} nor \texttt{depart} actions starve. This is due to the fact that when the parking`lot reaches capacity by continuing to allow arrivals, since it is of a higher priority, the only action which can be performed is the \texttt{depart} action, and once that is performed, then car park has a spot available and can thus allow but the \texttt{arrive} and \texttt{depart} action. Therefore, neither action starves.
+\end{solution}
+
+\begin{question}
+	For the dining philosophers problem, the act of simultaneously grabbing both forks is an abstraction of the general rule that the act of picking up both forks is atomic. In other words, the order in which the forks are picked up (left or right first) is arbitrary, but once the process of picking starts, it cannot be interrupted. In practice, conceptual simultaneity is often implemented as atomicity. \\
+
+	Provide an FSP for the dining philosophers problem where the act of sequentially picking up both forks is atomic.
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		&\mathtt{FORK} = ( \\
+		& \qquad \mathtt{request\_right} \rightarrow \mathtt{take\_right} \rightarrow \mathtt{put\_right} \rightarrow \mathtt{FORK} \\
+		& \qquad | \; \mathtt{request\_left} \rightarrow \mathtt{take\_left} \rightarrow \mathtt{put\_left} \rightarrow \mathtt{FORK} \\
+		&). \\\\
+		&\mathtt{PHIL} = (\mathtt{think} \rightarrow \mathtt{request\_forks} \rightarrow \mathtt{GRAB\_FORKS}). \\\\
+		&\mathtt{GRAB\_FORKS} = ( \\
+		& \qquad \mathtt{take\_right} \rightarrow \mathtt{take\_left} \rightarrow \mathtt{eat} \rightarrow \mathtt{DROP\_FORKS} \\
+		& \qquad | \; \mathtt{take\_left} \rightarrow \mathtt{take\_right} \rightarrow \mathtt{eat} \rightarrow \mathtt{DROP\_FORKS} \\
+		&). \\\\
+		&\mathtt{DROP\_FORKS} = ( \\
+		& \qquad \mathtt{put\_left} \rightarrow \mathtt{put\_right} \rightarrow \mathtt{PHIL} \\
+		& \qquad | \; \mathtt{put\_right} \rightarrow \mathtt{put\_left} \rightarrow \mathtt{PHIL} \\
+		&). \\\\
+		&\mathtt{DINERS}(N = 5) = ( \\
+		& \qquad \mathtt{forall}[i : 1..N] ( \\
+		& \qquad \quad \mathtt{phil}[i] : \mathtt{PHIL} \; || \; \{ \mathtt{phil}[i].\mathtt{right}, \; \mathtt{phil}[(i+1)\%N].\mathtt{left} \} :: \mathtt{FORK} \\
+		& \qquad ) \\
+		&) \{ \\
+		& \qquad \mathtt{request\_forks/right.request\_right}, \\
+		& \qquad \mathtt{request\_forks/left.request\_left}, \\
+		& \qquad \mathtt{request\_forks\_1/request\_right\_1}, \\
+		& \qquad \mathtt{request\_forks\_1/request\_left\_1}, \\
+		& \qquad \mathtt{request\_forks\_2/request\_right\_2}, \\
+		& \qquad \mathtt{request\_forks\_2/request\_left\_2}, \\
+		& \qquad \mathtt{request\_forks\_3/request\_right\_3}, \\
+		& \qquad \mathtt{request\_forks\_3/request\_left\_3}, \\
+		& \qquad \mathtt{request\_forks\_4/request\_right\_4}, \\
+		& \qquad \mathtt{request\_forks\_4/request\_left\_4}, \\
+		& \qquad \mathtt{request\_forks\_5/request\_right\_5}, \\
+		& \qquad \mathtt{request\_forks\_5/request\_left\_5} \\
+		&\}.
+	\end{align*}
+\end{solution}
+
+\begin{question}
+	Provide any kind of Petri net representation of the asymmetric dining philosophers' problem discussed in lecture notes 9 or chapter 6 of the textbook.
+\end{question}
+
+\begin{solution}
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-5.png}
+			\caption{Petri net representation of the dining philosophers' problem.}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{question}
+	A lift has a maximum capacity of ten people. In the model of the lift control system, passengers entering the lift are signalled by an enter action and passengers exiting the lift are signalled by an exit action. Specify a safety property as an FSP which, when composed with the lift, will check that the system never allows the lift it controls to have more than ten occupants.
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		&\mathtt{property} \quad \mathtt{MAX\_OCCUPANCY} = \mathtt{occ}[0] \\\\
+		&\mathtt{occ}[i:0..10] = ( \\
+			& \qquad \mathtt{enter} \rightarrow (\mathtt{when} \; (i < 10) \; \mathtt{occ}[i + 1] \; | \; \mathtt{when} \; i == 10 \; \mathtt{ERROR}) \\
+			& \qquad | \; \mathtt{exit} \rightarrow (\mathtt{when} \; (i > 0) \; \mathtt{occ}[i - 1] \; | \; \mathtt{when} \; i == 0 \; \mathtt{occ}[0]) \\
+		&)
+	\end{align*}
+\end{solution}
+
+\begin{question}
+	Consider the following safety property:
+
+	\begin{fsp}
+		property P $=$ (a $\rightarrow$ (b $\rightarrow$ P | a $\rightarrow$ P) | b $\rightarrow$ a $\rightarrow$ P)
+	\end{fsp}
+
+	Provide an LTS generated by the property P and a standard process SP such that LTS(P) = LTS(SP).
+\end{question}
+
+\begin{solution}
+	By decomposing the nested processes in \texttt{P}, we can create the following standard process \texttt{SP}, which has an equivalent LTS to LTS(\texttt{P}):
+
+	\begin{align*}
+		\mathtt{SP} &= \mathtt{S_0} \\
+		\mathtt{S_0} &= (\mathtt{a} \rightarrow \mathtt{S_1} \; | \; \mathtt{b} \rightarrow \mathtt{S_2}) \\
+		\mathtt{S_1} &= (\mathtt{a} \rightarrow \mathtt{S_0} \; | \; \mathtt{b} \rightarrow \mathtt{S_0}) \\
+		\mathtt{S_2} &= (\mathtt{a} \rightarrow \mathtt{S_0})\\
+	\end{align*}
+
+	Graphically, the LTS of \texttt{SP} looks like:
+
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[width=\linewidth/2]{~/Desktop/University/Courses/SFWRENG-3BB4-Coursework/Assignments/Assignment-2/imgs/Question-7.png}
+			\caption{LTS of \texttt{SP}}
+		\end{center}
+	\end{figure}
+\end{solution}
+
+\begin{question}
+	Consider both the smokers' problem and the dining philosophers' problem presented in lecture notes 10 and 9 respectively.
+\end{question}
+
+\begin{parts}
+	\item Provide a straightforward FSP model of smokers' similar to that of the dining philosophers' problem. Add a supplier described on page 6 and represent the system using an FSP. Use both the compact and expanded FSP notation. For example, the tobacco smoker could be modelled by the process:
+
+	\begin{fsp}
+		SMOKER\_T $=$ (get\_paper $\rightarrow$ roll\_cigarette $\rightarrow$ smoke\_cigarette $\rightarrow$ SMOKER\_T)
+	\end{fsp}
+	
+	The tobacco resource could be modelled by the process:
+
+	\begin{center}
+		\texttt{TOBACCO $=$ (delivered $\rightarrow$ picked $\rightarrow$ TOBACCO)}
+	\end{center}
+
+	If your solution deadlocks, provide the shortest trace that leads to the deadlock. If it doesn't provide some arguments as to why.
+\end{parts}
+
+\begin{solution}
+	\begin{steps}
+		\item Compact FSP of the smokers' problem.
+	\end{steps}
+	\begin{lstlisting}[language={}, caption={Compact FSP specification of smokers' problem}, label={lst:smokers2}]
+	SMOKER_T = (
+	    get_paper -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T
+	).
+	
+	SMOKER_M = (
+	    get_tobacco -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_P
+	).
+	
+	SMOKER_P = (
+	    get_tobacco -> get_paper -> roll_cigarrette -> smoke_cigarrette -> SMOKER_M
+	).
+	
+	TOBACCO = (delivered -> picked -> TOBACCO).
+	PAPER   = (delivered -> picked -> PAPER).
+	MATCH   = (delivered -> picked -> MATCH).
+	
+	AGENT = (can_deliver -> deliver_ing1 -> deliver_ing2 -> AGENT).
+	
+	RULE = (can_deliver -> finish_smoking -> RULE).
+	
+	SMOKERS = (st:SMOKER_T || sp:SMOKER_P || sm:SMOKER_M).
+	
+	RESOURCES = (
+	    {sm, sp} :: TOBACCO ||
+	    {st, sm} :: PAPER   ||
+	    {st, sp} :: MATCH
+	).
+	
+	AGENTS_RULE = (
+	    {st, sp, sm} :: RULE ||
+	    {sm, sp} :: AGENT ||
+	    {sm, st} :: AGENT ||
+	    {st, sp} :: AGENT
+	).
+	
+	SYSTEM = (SMOKERS || RESOURCES || AGENTS_RULE) / {
+	    st.get_paper/st.picked, st.get_match/st.picked,
+	    sp.get_tobacco/sp.picked, sp.get_match/sp.picked,
+	    sm.get_tobacco/sm.picked, sm.get_paper/sm.picked,
+	    st.deliver_ing1/st.delivered, st.deliver_ing2/st.delivered,
+	    sp.deliver_ing1/sp.delivered, sp.deliver_ing2/sp.delivered,
+	    sm.deliver_ing1/sm.delivered, sm.deliver_ing2/sm.delivered,
+	    st.finish_smoking/st.smoke_cigarrette,
+	    sp.finish_smoking/sp.smoke_cigarrette,
+	    sm.finish_smoking/sm.smoke_cigarrette
+	}.
+	\end{lstlisting}
+
+	\begin{steps}
+		\item Expanded FSP.
+	\end{steps}
+
+	\begin{lstlisting}[language={}, caption={Expanded FSP specification of smokers' problem}, label={lst:smokers1}]
+		TOBACCO = (delivered -> picked -> TOBACCO).
+		PAPER   = (delivered -> picked -> PAPER).
+		MATCH   = (delivered -> picked -> MATCH).
+		
+		SMOKER_T = (get_paper -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T).
+		SMOKER_M = (get_tobacco -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_P).
+		SMOKER_P = (get_tobacco -> get_paper -> roll_cigarrette -> smoke_cigarrette -> SMOKER_M).
+		
+		AGENT_T = (can_deliver -> deliver_paper -> deliver_match -> AGENT_T).
+		AGENT_P = (can_deliver -> deliver_match -> deliver_tobacco -> AGENT_P).
+		AGENT_M = (can_deliver -> deliver_tobacco -> deliver_paper -> AGENT_M).
+		
+		RULE = (can_deliver -> finish_smoking -> RULE).
+		
+		SMOKERS = (st:SMOKER_T || sp:SMOKER_P || sm:SMOKER_M).
+		
+		RESOURCES = (
+		    {sm, sp} :: TOBACCO ||
+		    {st, sm} :: PAPER   ||
+		    {st, sp} :: MATCH
+		).
+		
+		AGENTS = (
+		    {sm, sp} :: AGENT_T ||
+		    {sm, st} :: AGENT_P ||
+		    {st, sp} :: AGENT_M
+		).
+		
+		COORDINATION = (
+		    {st, sp, sm} :: RULE
+		).
+		
+		SYSTEM = (SMOKERS || RESOURCES || AGENTS || COORDINATION) / {
+		    st.get_paper/st.picked, st.get_match/st.picked,
+		    sp.get_tobacco/sp.picked, sp.get_match/sp.picked,
+		    sm.get_tobacco/sm.picked, sm.get_paper/sm.picked,
+		    st.deliver_paper/st.delivered, st.deliver_match/st.delivered,
+		    sp.deliver_tobacco/sp.delivered, sp.deliver_match/sp.delivered,
+		    sm.deliver_tobacco/sm.delivered, sm.deliver_paper/sm.delivered,
+		    st.finish_smoking/st.smoke_cigarrette,
+		    sp.finish_smoking/sp.smoke_cigarrette,
+		    sm.finish_smoking/sm.smoke_cigarrette
+		}.
+	\end{lstlisting}
+
+	\begin{steps}
+		\item Deadlock analysis.
+	\end{steps}
+
+	The solution does not exhibit deadlock. This can be verified by analyzing the behavior and synchronization of the defined FSP processes. The \texttt{RULE} process enforces coordination among all components by ensuring that new ingredients are not delivered until the current smoking cycle is complete. Specifically, it requires that a \texttt{finish\_smoking} action occur before another \texttt{can\_deliver} action is permitted. This guarantees that only one set of ingredients is ever present on the table at a time, preventing simultaneous deliveries and eliminating resource conflicts.
+	
+	Each smoker process also follows a fixed, sequential pattern:
+	\texttt{get\_ingredient1} $\rightarrow$ \texttt{get\_ingredient2} $\rightarrow$ \texttt{roll\_cigarrette} $\rightarrow$ \texttt{smoke\_cigarrette}.
+	After the smoking phase, the smoker triggers \texttt{finish\_smoking}, which signals to the \texttt{RULE} process that the cycle has completed and allows the next delivery to proceed. This strict sequence ensures that no smoker can progress out of order or hold resources indefinitely.
+	
+	Furthermore, the system enforces mutual exclusion among agents. Since all agents synchronize on the \texttt{can\_deliver} event, only one agent can perform a delivery at any given time. The \texttt{RULE} process governs this synchronization, authorizing exactly one delivery before requiring the corresponding \texttt{finish\_smoking} event. As a result, each cycle involves precisely one agent delivering one valid pair of ingredients.
+	
+	Finally, no circular wait conditions can occur. Each smoker only waits for the specific ingredients they are missing, meaning there is no shared contention over the same resources. Only one smoker obtains both required ingredients in any given cycle, and the process \texttt{(smoke\_cigarrette} $\rightarrow$ \texttt{finish\_smoking} $\rightarrow$ \texttt{can\_deliver)} always completes fully before another cycle begins.
+	
+	Therefore, this FSP specification successfully models the Smokers Problem without deadlock. The interaction between the \texttt{RULE}, \texttt{AGENT}, and \texttt{SMOKER} processes ensures that all participants take turns according to the resources available, allowing the system to continuously and safely progress through the \texttt{deliver} $\rightarrow$ \texttt{pick} $\rightarrow$ \texttt{smoke} $\rightarrow$ \texttt{deliver} cycle.
+\end{solution}
+
+
+\begin{parts}
+	\item Write a safety property as a process with the syntax:
+
+	\begin{fsp}
+		property CORRECT\_PICKUP = $\ldots$
+	\end{fsp}
+
+	that verifies the correct sequences of resource picking. Compose \texttt{CORRECT\_PICKUP} with your solution in (a) and use the system provided by the textbook to verify that the safety property isn't violated.
+\end{parts}
+
+\begin{solution}
+	\begin{lstlisting}[language={}, caption={Property and composed process for correct pickup}, label={lst:correctpickup}]
+	property CORRECT_PICKUP = (
+	    st.get_paper -> st.get_match -> CORRECT_PICKUP
+	  | sp.get_tobacco -> sp.get_match -> CORRECT_PICKUP
+	  | sm.get_tobacco -> sm.get_paper -> CORRECT_PICKUP
+	).
+	
+	FULL_CIG_SMOKERS = (SMOKERS || RESOURCES || AGENT_RULE || CORRECT_PICKUP) / {
+	    st.get_paper/st.picked, sm.get_paper/sm.picked, sp.get_paper/sp.picked,
+	    st.deliver_paper/st.delivered, sm.deliver_paper/sm.delivered, sp.deliver_paper/sp.delivered,
+	    st.smoking_completed/st.smoke_cigarrette,
+	    sm.smoking_completed/sm.smoke_cigarrette,
+	    sp.smoking_completed/sp.smoke_cigarrette
+	}.
+	\end{lstlisting}
+\end{solution}
+
+\begin{parts}
+	\item An elegant, deadlock-free solution to the smokers problem can be constructed by applying an ``ask first, do later`` approach. Assume that the smokers look at the table first, before making a move. Then each smoker can start requesting resources only if he has the ingredient he does not see on the table, otherwise, the smoker waits. Provide this solution usings FSPs.
+\end{parts}
+
+\begin{solution}
+	\begin{lstlisting}[language={}, caption={FSP model of cigarette smokers problem}, label={lst:cigsmokers}]
+	SMOKER_T = (no_tobacco -> get_paper -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T).
+	SMOKER_P = (no_paper -> get_tobacco -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_P).
+	SMOKER_M = (no_match -> get_tobacco -> get_paper -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T).
+	
+	TOBACCO = (delivered -> picked -> TOBACCO).
+	PAPER   = (delivered -> picked -> PAPER).
+	MATCH   = (delivered -> picked -> MATCH).
+	
+	AGENT_T = (can_deliver -> no_tobacco -> deliver_paper -> deliver_match -> AGENT_T).
+	AGENT_P = (can_deliver -> no_paper -> deliver_match -> deliver_tobacco -> AGENT_P).
+	AGENT_M = (can_deliver -> no_match -> deliver_tobacco -> deliver_paper -> AGENT_M).
+	
+	RULE = (can_deliver -> smoking_completed -> RULE).
+	
+	SMOKERS = (st:SMOKER_T || sp:SMOKER_P || sm:SMOKER_M).
+	
+	RESOURCES = (
+	    {sm, sp} :: TOBACCO ||
+	    {st, sm} :: PAPER   ||
+	    {st, sp} :: MATCH
+	).
+	
+	AGENT_RULE = (
+	    {sm, sp, st} :: RULE ||
+	    {sm, sp}     :: AGENT_T ||
+	    {sm, st}     :: AGENT_P ||
+	    {st, sp}     :: AGENT_M
+	).
+	
+	CIG_SMOKERS = (SMOKERS || RESOURCES || AGENT_RULE) / {
+	    st.get_paper/st.picked, sm.get_paper/sm.picked, sp.get_paper/sp.picked,
+	    st.deliver_paper/st.delivered, sm.deliver_paper/sm.delivered, sp.deliver_paper/sp.delivered,
+	    st.smoking_completed/st.smoke_cigarrette,
+	    sm.smoking_completed/sm.smoke_cigarrette,
+	    sp.smoking_completed/sp.smoke_cigarrette
+	}.
+	\end{lstlisting}
+\end{solution}
+
+\begin{parts}
+	\item Compose your solution from (c) with the \texttt{CORRECT\_PICKUP} property from (b) and use the system provided by the textbook to verify that the safety property is not violated.
+\end{parts}
+
+\begin{solution}
+	Using the following LTSA code:
+
+	\begin{lstlisting}
+
+		// Cigarette smokers system + CORRECT_PICKUP property
+		SMOKER_T = (no_tobacco -> get_paper -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T).
+		SMOKER_P = (no_paper -> get_tobacco -> get_match -> roll_cigarrette -> smoke_cigarrette -> SMOKER_P).
+		SMOKER_M = (no_match -> get_tobacco -> get_paper -> roll_cigarrette -> smoke_cigarrette -> SMOKER_T).
+		
+		TOBACCO = (delivered -> picked -> TOBACCO).
+		PAPER   = (delivered -> picked -> PAPER).
+		MATCH   = (delivered -> picked -> MATCH).
+		
+		AGENT_T = (can_deliver -> no_tobacco -> deliver_paper -> deliver_match -> AGENT_T).
+		AGENT_P = (can_deliver -> no_paper -> deliver_match -> deliver_tobacco -> AGENT_P).
+		AGENT_M = (can_deliver -> no_match -> deliver_tobacco -> deliver_paper -> AGENT_M).
+		
+		RULE = (can_deliver -> smoking_completed -> RULE).
+		
+		SMOKERS = (st:SMOKER_T || sp:SMOKER_P || sm:SMOKER_M).
+		
+		RESOURCES = (
+		    {sm, sp} :: TOBACCO ||
+		    {st, sm} :: PAPER   ||
+		    {st, sp} :: MATCH
+		).
+		
+		AGENT_RULE = (
+		    {sm, sp, st} :: RULE ||
+		    {sm, sp}     :: AGENT_T ||
+		    {sm, st}     :: AGENT_P ||
+		    {st, sp}     :: AGENT_M
+		).
+		
+		CIG_SMOKERS = (SMOKERS || RESOURCES || AGENT_RULE) / {
+		    st.get_paper/st.picked, sm.get_paper/sm.picked, sp.get_paper/sp.picked,
+		    st.deliver_paper/st.delivered, sm.deliver_paper/sm.delivered, sp.deliver_paper/sp.delivered,
+		    st.smoking_completed/st.smoke_cigarrette,
+		    sm.smoking_completed/sm.smoke_cigarrette,
+		    sp.smoking_completed/sp.smoke_cigarrette
+		}.
+		
+		property CORRECT_PICKUP = (
+		    st.get_paper -> st.get_match -> CORRECT_PICKUP
+		  | sp.get_tobacco -> sp.get_match -> CORRECT_PICKUP
+		  | sm.get_tobacco -> sm.get_paper -> CORRECT_PICKUP
+		).
+		
+		FULL_CIG_SMOKERS = (SMOKERS || RESOURCES || AGENT_RULE || CORRECT_PICKUP) / {
+		    st.get_paper/st.picked, sm.get_paper/sm.picked, sp.get_paper/sp.picked,
+		    st.deliver_paper/st.delivered, sm.deliver_paper/sm.delivered, sp.deliver_paper/sp.delivered,
+		    st.smoking_completed/st.smoke_cigarrette,
+		    sm.smoking_completed/sm.smoke_cigarrette,
+		    sp.smoking_completed/sp.smoke_cigarrette
+		}.
+		\end{lstlisting}
+
+	We can indeed verify that the \texttt{CORRECT\_PICKUP} property is not violated by the FSP.
+
+\end{solution}
+
+\end{document}
