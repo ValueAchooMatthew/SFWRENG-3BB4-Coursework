@@ -1,0 +1,310 @@
+\documentclass[10pt]{article}
+\usepackage{braket}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{mathtools}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\pagestyle{fancy}
+\fancyhf{}
+\title{SFWRENG 3BB4 - Assignment 3}
+\author{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\date{\today}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	citecolor=blue,
+	anchorcolor=blue
+}
+
+\fancyhead{}
+\fancyhead[L]{Matthew Farah, \href{mailto:farahm11@mcmaster.ca}{$\langle$farahm11@mcmaster.ca$\rangle$}, 400468251}
+\fancyhead[R]{SFWRENG 3BB4 - Assignment 3}
+
+\AtBeginEnvironment{align}{\setcounter{equation}{0}}
+
+\setlength{\parindent}{0cm}
+
+\newcounter{question}
+\renewcommand{\thequestion}{\arabic{question}}
+
+\newenvironment{question}{
+	\refstepcounter{question}
+	\addcontentsline{toc}{section}{\protect{\large{Question \thequestion}}}
+	\vspace{1em}
+	\par
+	\large\textbf{Question \thequestion}
+	\vspace{.2cm}
+	\par
+	\setcounter{subquestion}{0}
+	\setcounter{step}{0}
+}{\vspace{.5em}}
+
+\newenvironment{solution}{
+	\vspace{1em}\par\large\textbf{{Solution:}}\par\vspace{1em}
+}{
+	\vspace{1em}
+}
+
+\newcounter{subquestion}
+\renewcommand{\thesubquestion}{\alph{subquestion}}
+
+\newenvironment{subquestion}{
+	\refstepcounter{subquestion}
+	\vspace{1em}\par\large\textbf{(\thesubquestion)}\hspace{-1em}
+	\setcounter{step}{0}
+	\addcontentsline{toc}{subsection}{\protect{\large{Part \thequestion.\thesubquestion}}}
+}{
+	\par
+	\vspace{1em}
+}
+
+\makeatother
+
+\makeatletter
+
+\newcounter{step}
+\renewcommand{\thestep}{\Roman{step}}
+
+\newenvironment{step}{
+	\refstepcounter{step}
+	\vspace{1.5em}\par\noindent\large\textbf{(\thestep)}
+}{
+	\par
+	\vspace{1.5em}
+}
+
+\makeatother
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\renewcommand{\arraystretch}{1.8}
+
+\fontsize{10pt}{14pt}\selectfont
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\begin{question}
+	Consider the following Petri net solution to the dining philosophers problem with a butler, presented below:
+
+	\begin{align*}
+		&\text{colour} \; \text{PH} = \text{with} \; \text{ph1} \; | \; \text{ph2} \; | \; \text{ph3} \; | \; \text{ph4} \; | \; \text{ph} \\
+		&\text{colour} \; \text{FORK} = \text{with} \; \text{f1} \; | \; \text{f2} \; | \; \text{f3} \; | \; \text{f4} \; | \; \text{g5} \\
+		&\text{colour} \; \text{TOKENS} = \text{with} t \\
+		&\text{var} \; x \colon \; \text{PH} \\
+		&\text{var} \; i \colon \; \text{TOKENS} \\
+		&\text{fun LF x} = \text{case of ph1} \implies \text{f2} \; | \; \text{ph2} \implies \text{f3} \; | \; \text{ph3} \implies \text{f4} \; | \; \text{ph4} \implies \text{f5} \; | \; \text{ph5} \implies \text{f1} \\
+		&\text{fun RF x} = \text{case of ph1} \implies \text{f1} \; | \; \text{ph2} \implies \text{f2} \; | \; \text{ph3} \implies \text{f3} \; | \; \text{ph4} \implies \text{f4} \; | \; \text{ph5} \implies \text{f5} \\
+	\end{align*}
+
+	The following are the interpretations of the places used in the Petri net:
+
+	\begin{enumerate}
+		\item $p_1$ is a thinking room.
+		\item $p_2$ is a dining room for philosophers without forks.
+		\item $p_3$ is a dining room for philosophers with only left forks.
+		\item $p_4$ is a dining room for philosophers who are eating.
+		\item $p_5$ is a dining room for philosophers who have finished eating and still have right forks.
+		\item $p_6$ is a room for unused forks.
+		\item $p_7$ is a room containing the bulter/counter.
+	\end{enumerate}
+
+	Prove that this solution is deadlock-free by mimicking the proof from page 33 of lecture notes 12.
+\end{question}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	A self-service gas station has several pumps for delivering gas to customers for their vehicles. Customers are expected to prepay a cashier for their gas. The cashier activates the pump to deliver gas.
+\end{question}
+
+\begin{subquestion}
+	Provide a model for the gas station with $N$ customers and $M$ pumps. Include a range of different amounts for payment and an ERROR case if an incorrect amount of gas is dispensed.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Specify and check (with $N = 2$ and $M = 3$) a First In First Out (FIFO) safety property which ensures that customers are served in the order in which they're paid.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Provide a simple Java implementation for the gas station system with $N = 2$, and $M = 3$.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	The cheese counter in a supermarket is continuously mobbed by hungry customers. There are two kinds of customers: bold customers, who push their way to the front of the mob and demand services, and meek customers, who wait patiently for service. Request for service is denoted by the $getcheese$ action and service completion is denoted by the action $cheese$.
+\end{question}
+
+\begin{subquestion}
+	Assuming that there is always cheese available, model the system with an FSP for a fixed population of two bold customers and two meek customers.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Assuming that there is always cheese available, model the system with any kind of Petri net.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	For the FSP model, show that meek customers may never be served their requests to get cheese have lower priority than those of bold customers.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	To restore order, the management installs a ticket machine that issues tickets to customers. Tickets are numbered in the range of ($1\ldots{MT}$). When ticket $MT$ has been issued, the next ticket to be issued is ticket 1. The cheese counter has a display that indicates the ticket number of the customer currently being served. If a customer possesses a ticket with a ticket number corresponding to the number shown on the display, then they will be served. When the customer is done being served, the ticker counter is incremented. Model this system using an FSP and show that, even when their requests are low-priority, meek customers are still served.
+\end{question}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	Translate the model of the cheese question for Question 4 into a Java program. Each customer should be implemented via dynamically created threads which obtain tickets, be served cheese, then terminate.
+\end{question}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	Design, using an FSP, a message-passing protocol which allows a producer process to communicate with a consumer process by asynchronous messaging to send a bounded number ($N$) of messages before it is blocked and must wait for the consumer to recieve a message. Construct a model which can be used to verify that your protocol prevents queue overflow if ports are correctly dimensioned.
+\end{question}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+\end{question}
+
+\begin{subquestion}
+	Consider the system $M$ defined below:
+
+	Justifying your answer, determine whether $M, s_0 |= \phi$, and $M, s_2 |= \phi$ hold, where $\phi$ is the LTL or CTL formula:
+
+	\begin{enumerate}
+		\item $\not \phi \implies r$.
+		\item $\not EG r$.
+		\item $\not E(t \cup q)$.
+		\item $F \, q$.
+	\end{enumerate}
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Express the following statement in LTL and CTL: ``Event $p$ precedes $s$ and $t$ on all computational paths''.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Express the following statement in LTL and CTL: ``Between the events $q$ and $r$, $p$ is never true but $t$ is always true''.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Express the following statement in LTL and CTL: `` $\phi$ is true infinitely often along every path starting at s''.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Express the following statement in LTL and CTL: ``Whenever $p$ is followed by $q$, after some finite number of steps, then the system enters a state in which no $r$ occurs until $t$''.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{subquestion}
+	Express the following statement in LTL and CTL: ``Between the events $q$ and $r$, $p$ is never true''.
+\end{subquestion}
+
+\begin{solution}
+
+\end{solution}
+
+\begin{question}
+	Consider the \emph{Readers-Writers} as described in the first part of Lecture Notes 12 and Chapter 7 of the textbook. Take the case of two readers and two riders and provide a model in LTL or CTL. Provide a state machine that defined the model as figures, detailed on pages 30 \& 33 of Lecture Notes 15 for mutual exclusion, appropriate atomic predicates $n_1, n_2, t_1, t_2, c_1, c_2$ for mutual exclusion, and appropriate safety and liveliness properties.
+\end{question}
+
+\begin{solution}
+
+\end{solution}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
